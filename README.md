@@ -4,12 +4,14 @@ A Streamlit-based web application that performs semantic vector search on compan
 
 ## Features
 
+- **Password Protection**: Secure access with authentication (password: email ebube198@gmail.com to request password)
 - **Semantic Search**: Use natural language to find similar companies based on their descriptions
 - **Vector Embeddings**: Powered by OpenAI's text-embedding-ada-002 model
 - **MongoDB Vector Search**: Leverages MongoDB's vector search index for fast similarity matching
 - **Filtering**: Filter results by industry and other criteria
 - **USA Focus**: All searches are automatically filtered for US-based companies
 - **Interactive UI**: Clean and responsive Streamlit interface
+- **Session Management**: Stay logged in during your session with logout functionality
 
 ## Prerequisites
 
@@ -66,11 +68,18 @@ A Streamlit-based web application that performs semantic vector search on compan
 2. **Open your browser**
    Navigate to `http://localhost:8501`
 
-3. **Search for companies**
+3. **Authenticate**
+   - Enter the password: `ExecScience`
+   - Click "Login" to access the application
+
+4. **Search for companies**
    - Enter a company description in the text area
    - Optionally filter by industries (comma-separated)
    - Adjust search parameters as needed
    - Click "Search for Similar Companies"
+
+5. **Logout (optional)**
+   - Use the "Logout" button in the top-right corner to return to the login screen
 
 ## Project Structure
 

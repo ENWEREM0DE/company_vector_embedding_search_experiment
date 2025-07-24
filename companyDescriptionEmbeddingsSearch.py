@@ -8,6 +8,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# --- API Keys and Configuration ---
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+MONGO_URI = os.getenv("MONGO_URI")
+DATABASE_NAME = "marovi_db_prod"
+PASSWORD = os.getenv("PASSWORD")
+
 # --- Page Configuration ---
 st.set_page_config(
     page_title="Company Vector Search",
@@ -20,13 +26,36 @@ st.set_page_config(
 if 'search_results_df' not in st.session_state:
     st.session_state.search_results_df = None
 
+# Initialize authentication state
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
 
-# --- API Keys and Configuration ---
-# WARNING: It is not recommended to hardcode secrets in your code.
-# Use Streamlit's secrets management for better security in production.
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-MONGO_URI = os.getenv("MONGO_URI")
-DATABASE_NAME = "marovi_db_prod"
+# --- Authentication ---
+def check_password():
+    """Returns True if the user has entered the correct password."""
+    if st.session_state.authenticated:
+        return True
+    
+    st.title("🔐 Authentication Required")
+    st.markdown("Please enter the password to access the Company Vector Search application.")
+    
+    with st.form("password_form"):
+        password = st.text_input("Password", type="password", placeholder="Enter password")
+        submit_password = st.form_submit_button("Login")
+        
+        if submit_password:
+            if password == PASSWORD:
+                st.session_state.authenticated = True
+                st.success("Authentication successful! Redirecting...")
+                st.rerun()
+            else:
+                st.error("Incorrect password. Please try again.")
+    
+    return False
+
+# Check authentication before proceeding
+if not check_password():
+    st.stop()
 
 
 # --- Initialize Clients ---
@@ -116,7 +145,15 @@ def vector_search(query_vector, num_candidates, limit, industries_list):
 
 
 # --- Streamlit UI ---
-st.title("🏢 MongoDB Vector Search for Companies")
+# Add logout functionality
+col1, col2 = st.columns([4, 1])
+with col1:
+    st.title("🏢 MongoDB Vector Search for Companies")
+with col2:
+    if st.button("🚪 Logout", help="Click to logout and return to login screen"):
+        st.session_state.authenticated = False
+        st.rerun()
+
 st.markdown("Enter a description to find similar companies. All searches are filtered for companies in the **USA**.")
 
 # --- Search Form ---
